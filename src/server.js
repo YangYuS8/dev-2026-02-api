@@ -23,46 +23,46 @@ function normalizeStatus(status) {
 }
 
 /**
- * @api {get} /api/health Health check
+ * @api {get} /api/health 健康检查
  * @apiName HealthCheck
  * @apiGroup System
  *
- * @apiSuccess {Boolean} success Always true.
- * @apiSuccess {String} message Status message.
+ * @apiSuccess {Boolean} success 请求是否成功。
+ * @apiSuccess {String} message 状态说明。
  */
 app.get(`${API_BASE}/health`, (req, res) => {
   res.json({ success: true, message: "ok" });
 });
 
 /**
- * @api {get} /api/tasks Get task list
+ * @api {get} /api/tasks 获取任务列表
  * @apiName GetTasks
  * @apiGroup Tasks
  *
- * @apiSuccess {Boolean} success Request status.
- * @apiSuccess {Object[]} data Task list.
- * @apiSuccess {Number} data.id Task id.
- * @apiSuccess {String} data.title Task title.
- * @apiSuccess {String} data.owner Task owner.
- * @apiSuccess {String="todo","doing","done"} data.status Task status.
- * @apiSuccess {String} data.createdAt ISO time.
+ * @apiSuccess {Boolean} success 请求状态。
+ * @apiSuccess {Object[]} data 任务列表。
+ * @apiSuccess {Number} data.id 任务 ID。
+ * @apiSuccess {String} data.title 任务标题。
+ * @apiSuccess {String} data.owner 负责人。
+ * @apiSuccess {String="todo","doing","done"} data.status 任务状态。
+ * @apiSuccess {String} data.createdAt 创建时间（ISO 格式）。
  */
 app.get(`${API_BASE}/tasks`, (req, res) => {
   res.json({ success: true, data: tasks });
 });
 
 /**
- * @api {post} /api/tasks Create task
+ * @api {post} /api/tasks 新增任务
  * @apiName CreateTask
  * @apiGroup Tasks
  *
- * @apiBody {String} title Task title.
- * @apiBody {String} owner Task owner.
- * @apiBody {String="todo","doing","done"} status Task status.
+ * @apiBody {String} title 任务标题。
+ * @apiBody {String} owner 负责人。
+ * @apiBody {String="todo","doing","done"} status 任务状态。
  *
- * @apiSuccess {Boolean} success Request status.
- * @apiSuccess {String} message Success message.
- * @apiSuccess {Object} data Created task.
+ * @apiSuccess {Boolean} success 请求状态。
+ * @apiSuccess {String} message 成功提示信息。
+ * @apiSuccess {Object} data 新建成功后的任务对象。
  */
 app.post(`${API_BASE}/tasks`, (req, res) => {
   const { title, owner, status } = req.body || {};
