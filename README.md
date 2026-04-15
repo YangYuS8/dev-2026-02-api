@@ -9,10 +9,12 @@
 - 给学生提供任务列表接口
 - 提供新增任务接口
 - 支持前端做 GET / POST / 数据渲染 / 筛选练习
+- 提供线上 apidoc 文档
 
 域名预期：
 
-- `https://api.yangyus8.top/dev-2026-02`
+- API 基础地址：`https://api.yangyus8.top/api`
+- API 文档地址：`https://api.yangyus8.top/apidoc/`
 
 ---
 
@@ -23,15 +25,14 @@
 - Node.js
 - Express
 - CORS
+- apidoc
 
 原因很简单：
 
 - 足够轻量
 - 易部署
 - 对这种考核接口完全够用
-- 对云服务器压力相对小
-
-对于 150 人左右的调用量，这种级别的接口只要不是被恶意刷，正常是能扛住的。
+- 文档可以自动生成，更接近真实开发流程
 
 ---
 
@@ -40,30 +41,20 @@
 ### 1. 健康检查
 
 ```http
-GET /dev-2026-02/health
+GET /api/health
 ```
 
 ### 2. 获取任务列表
 
 ```http
-GET /dev-2026-02/tasks
+GET /api/tasks
 ```
 
 ### 3. 新增任务
 
 ```http
-POST /dev-2026-02/tasks
+POST /api/tasks
 Content-Type: application/json
-```
-
-请求体示例：
-
-```json
-{
-  "title": "完成首页样式",
-  "owner": "李四",
-  "status": "todo"
-}
 ```
 
 ---
@@ -74,6 +65,12 @@ Content-Type: application/json
 
 ```bash
 npm install
+```
+
+### 生成文档
+
+```bash
+npm run docs
 ```
 
 ### 启动服务
@@ -88,13 +85,31 @@ npm start
 
 ---
 
+## 目录说明
+
+```text
+.
+├── src/
+│   └── server.js
+├── public/
+│   └── apidoc/
+└── package.json
+```
+
+---
+
 ## 建议部署方式
 
-你说你会自己接 Nginx，那这边我就保持最简单：
+你说你会自己接 Nginx，那这边保持最简单：
 
-- Node 服务监听 `127.0.0.1:3000` 或 `0.0.0.0:3000`
-- Nginx 反代到这个端口
-- 对外提供 `https://api.yangyus8.top/dev-2026-02`
+- Node 服务监听 `3000`
+- Nginx 反代 `/api` 到 Node
+- Nginx 也可直接转发 `/apidoc/`
+
+对外提供：
+
+- `https://api.yangyus8.top/api`
+- `https://api.yangyus8.top/apidoc/`
 
 ---
 

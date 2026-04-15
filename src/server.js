@@ -3,12 +3,13 @@ import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BASE_PATH = "/dev-2026-02";
+const API_BASE = "/api";
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "*";
 const MAX_TASKS = 5000;
 
 app.use(cors({ origin: ALLOW_ORIGIN }));
 app.use(express.json({ limit: "128kb" }));
+app.use("/apidoc", express.static("public/apidoc"));
 
 let nextId = 4;
 let tasks = [
@@ -21,15 +22,49 @@ function normalizeStatus(status) {
   return ["todo", "doing", "done"].includes(status) ? status : null;
 }
 
-app.get(`${BASE_PATH}/health`, (req, res) => {
+/**
+ * @api {get} /api/health Health check
+ * @apiName HealthCheck
+ * @apiGroup System
+ *
+ * @apiSuccess {Boolean} success Always true.
+ * @apiSuccess {String} message Status message.
+ */
+app.get(`${API_BASE}/health`, (req, res) => {
   res.json({ success: true, message: "ok" });
 });
 
-app.get(`${BASE_PATH}/tasks`, (req, res) => {
+/**
+ * @api {get} /api/tasks Get task list
+ * @apiName GetTasks
+ * @apiGroup Tasks
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {Object[]} data Task list.
+ * @apiSuccess {Number} data.id Task id.
+ * @apiSuccess {String} data.title Task title.
+ * @apiSuccess {String} data.owner Task owner.
+ * @apiSuccess {String="todo","doing","done"} data.status Task status.
+ * @apiSuccess {String} data.createdAt ISO time.
+ */
+app.get(`${API_BASE}/tasks`, (req, res) => {
   res.json({ success: true, data: tasks });
 });
 
-app.post(`${BASE_PATH}/tasks`, (req, res) => {
+/**
+ * @api {post} /api/tasks Create task
+ * @apiName CreateTask
+ * @apiGroup Tasks
+ *
+ * @apiBody {String} title Task title.
+ * @apiBody {String} owner Task owner.
+ * @apiBody {String="todo","doing","done"} status Task status.
+ *
+ * @apiSuccess {Boolean} success Request status.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object} data Created task.
+ */
+app.post(`${API_BASE}/tasks`, (req, res) => {
   const { title, owner, status } = req.body || {};
 
   if (!title || !owner || !status) {
